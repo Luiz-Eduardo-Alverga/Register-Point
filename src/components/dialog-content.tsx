@@ -20,6 +20,11 @@ interface CardContentProps {
 }
 
 export function CardContentDialog({ results }: CardContentProps) {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pt-BR') // Formata para dd/MM/yyyy
+  }
+
   return (
     <Card className="border-none shadow-none">
       <CardHeader className="flex items-center">
@@ -46,7 +51,9 @@ export function CardContentDialog({ results }: CardContentProps) {
         <div className="flex justify-between gap-2">
           <div className="flex gap-2">
             <p className="text-lg">Data:</p>
-            <p className="text-lg font-semibold">{results?.Data}</p>
+            <p className="text-lg font-semibold">
+              {results?.Data ? formatDate(results.Data) : ''}
+            </p>
           </div>
 
           <div className="flex gap-2">
