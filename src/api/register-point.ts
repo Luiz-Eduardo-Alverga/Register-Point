@@ -11,6 +11,7 @@ export async function registerPoint({ codigoPonto }: RegisterPointQuery) {
     const response = await api.post('Ponto/Registrar', {
       codigoPonto,
       target: 'Ponto',
+      user: 'Kilberty',
     })
 
     return response.data
