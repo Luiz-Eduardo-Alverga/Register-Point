@@ -7,12 +7,22 @@ interface RegisterPointQuery {
 }
 
 export async function registerPoint({ codigoPonto }: RegisterPointQuery) {
+  const token = localStorage.getItem('authToken')
+
   try {
-    const response = await api.post('Ponto/Registrar', {
-      codigoPonto,
-      target: 'Ponto',
-      user: 'Kilberty',
-    })
+    const response = await api.post(
+      'Ponto/Registrar',
+      {
+        codigoPonto,
+        target: 'Ponto',
+        user: 'Kilberty',
+      },
+      {
+        headers: {
+          Authorization: token,
+        },
+      },
+    )
 
     return response.data
   } catch (error) {

@@ -21,8 +21,8 @@ interface CardContentProps {
 
 export function CardContentDialog({ results }: CardContentProps) {
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pt-BR') // Formata para dd/MM/yyyy
+    const [year, month, day] = dateString.split('-')
+    return `${day}/${month}/${year}`
   }
 
   return (
