@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { Clock7, LoaderCircle } from 'lucide-react'
+import { Clock7, LoaderCircle, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -29,6 +30,8 @@ type RegisterPointForm = z.infer<typeof registerPointSchema>
 
 export function RegisterPoint() {
   const [isDialogOpen, setDialogOpen] = useState(false)
+
+  const navigate = useNavigate()
 
   const { register, handleSubmit, setFocus, reset } =
     useForm<RegisterPointForm>()
@@ -80,39 +83,58 @@ export function RegisterPoint() {
     setDialogOpen(false)
   }
 
+  function handleLogout() {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('target')
+
+    navigate('login')
+  }
+
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
-      <div className="h-screen flex items-center justify-center">
-        <form
-          onSubmit={handleSubmit(handleRegisterPoint)}
-          className="flex w-[400px] flex-col gap-6 p-8 rounded-sm"
+    <>
+      <div className="flex pt-4 pr-4">
+        <Button
+          onClick={() => handleLogout()}
+          variant={'ghost'}
+          className="ml-auto"
         >
-          <Label className="m-auto">
-            <Clock7 className="m-auto text-primary w-20 h-20 mb-3" />
-            <span className="text-center font-serif text-slate-700 text-2xl mb-4">
-              Registrar Ponto
-            </span>
-          </Label>
-          <Input
-            placeholder="Insira seu código do ponto"
-            type="number"
-            {...register('codigoPonto')}
-          />
-          <Button className="w-full p-6 sm:p-0" disabled={isPending}>
-            {isPending ? (
-              <div className="flex items-center justify-center gap-2">
-                <LoaderCircle className="h-5 w-5 animate-spin" />
-                Carregando...
-              </div>
-            ) : (
-              'Confirmar'
-            )}
-          </Button>
-        </form>
+          <LogOut className="h-6 w-6 text-red-500" />
+          <span>Logout</span>
+        </Button>
       </div>
-      <DialogContent>
-        <CardContentDialog results={results} />
-      </DialogContent>
-    </Dialog>
+      <Dialog open={isDialogOpen} onOpenChange={handleCloseDialog}>
+        <div className="h-screen flex flex-col items-center justify-center">
+          <form
+            onSubmit={handleSubmit(handleRegisterPoint)}
+            className="flex w-[400px] flex-col gap-6 p-8 rounded-sm"
+          >
+            <Label className="m-auto">
+              <Clock7 className="m-auto text-primary w-20 h-20 mb-3" />
+              <span className="text-center font-serif text-slate-700 text-2xl mb-4">
+                Registrar Ponto
+              </span>
+            </Label>
+            <Input
+              placeholder="Insira seu código do ponto"
+              type="number"
+              {...register('codigoPonto')}
+            />
+            <Button className="w-full p-6 sm:p-0" disabled={isPending}>
+              {isPending ? (
+                <div className="flex items-center justify-center gap-2">
+                  <LoaderCircle className="h-5 w-5 animate-spin" />
+                  Carregando...
+                </div>
+              ) : (
+                'Confirmar'
+              )}
+            </Button>
+          </form>
+        </div>
+        <DialogContent>
+          <CardContentDialog results={results} />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
